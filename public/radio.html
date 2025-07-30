@@ -21,12 +21,21 @@
       backdrop-filter: blur(15px);
       border: 1px solid rgba(255, 255, 255, 0.12);
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
     }
     
     .station-card:hover {
       transform: translateY(-6px) scale(1.02);
       box-shadow: 0 20px 40px rgba(16, 185, 129, 0.3);
       border-color: rgba(16, 185, 129, 0.5);
+    }
+    
+    .station-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: contain;
+      object-position: center;
     }
     
     .fade-in {
@@ -74,6 +83,13 @@
       0%, 100% { transform: scaleY(0.5); }
       50% { transform: scaleY(1); }
     }
+
+    #radio-station-logo {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+    }
   </style>
 </head>
 <body class="gradient-bg text-white min-h-screen">
@@ -112,8 +128,8 @@
         <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6">
           <!-- Station Info -->
           <div class="flex items-center space-x-4">
-            <div class="relative">
-              <img id="radio-station-logo" src="" alt="Station Logo" class="w-16 h-16 rounded-xl shadow-lg">
+            <div class="relative w-16 h-16">
+              <img id="radio-station-logo" src="" alt="Station Logo" class="w-full h-full rounded-xl shadow-lg">
               <div class="absolute -inset-1 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-xl opacity-30 animate-pulse"></div>
             </div>
             <div>
@@ -143,15 +159,28 @@
 
   <script src="/assets/script.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Load radio stations if loadStations function exists
-      if (typeof loadStations === 'function') {
-        loadStations('radio');
+    const API_URL = import.meta.env.VITE_API_URL || 'https://backend-production.up.railway.app';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/stations?type=radio`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const stations = await response.json();
+        if (typeof renderRadioStations === 'function') {
+          renderRadioStations(stations);
+        }
+      } catch (error) {
+        console.error('Error loading radio stations:', error);
+        alert('Failed to load radio stations. Please try again later.');
       }
-      
+
       // Set up back button
       document.getElementById('radio-back-button').addEventListener('click', () => {
-        window.location.href = 'index.html';
+        document.getElementById('radio-player-container').classList.add('hidden');
+        document.getElementById('radio-grid').classList.remove('hidden');
+        document.getElementById('radio-player').pause(); // Stop playback
       });
     });
 

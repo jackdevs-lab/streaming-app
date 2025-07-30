@@ -1,24 +1,3 @@
-// Load stations from API
-async function loadStations(type) {
-  try {
-    const response = await fetch(`/api/stations?type=${type}`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const stations = await response.json();
-    
-    if (type === 'tv') {
-      renderTVStations(stations);
-    } else if (type === 'radio') {
-      renderRadioStations(stations);
-    }
-  } catch (error) {
-    console.error('Error loading stations:', error);
-    alert('Failed to load stations. Please try again later.');
-  }
-}
-
-// Render TV stations to the grid
 function renderTVStations(stations) {
   const grid = document.getElementById('tv-grid');
   grid.innerHTML = '';
@@ -28,7 +7,6 @@ function renderTVStations(stations) {
     card.className = `channel-card rounded-2xl p-6 cursor-pointer fade-in stagger-delay-${(index % 6) + 1}`;
     card.onclick = () => openTVPlayer(station);
     
-    // Map station type to gradient colors
     const gradients = {
       news: 'from-blue-600 to-purple-700',
       sports: 'from-emerald-600 to-teal-700',
@@ -45,7 +23,7 @@ function renderTVStations(stations) {
 
     card.innerHTML = `
       <div class="aspect-video bg-gradient-to-br ${gradientClass} rounded-xl mb-4 flex items-center justify-center">
-        <img src="${station.logo_url}" alt="${station.name}" class="w-24 h-24 object-contain opacity-80">
+        <img src="${station.logo_url}" alt="${station.name}" class="w-full h-full object-contain object-center">
       </div>
       <h3 class="text-xl font-semibold mb-2">${station.name}</h3>
       <p class="text-gray-400 text-sm font-light">${station.description || 'Live streaming'}</p>
@@ -65,7 +43,6 @@ function renderTVStations(stations) {
   });
 }
 
-// Render Radio stations to the grid
 function renderRadioStations(stations) {
   const grid = document.getElementById('radio-grid');
   grid.innerHTML = '';
@@ -75,7 +52,6 @@ function renderRadioStations(stations) {
     card.className = `station-card rounded-2xl p-6 cursor-pointer fade-in stagger-delay-${(index % 6) + 1}`;
     card.onclick = () => openRadioPlayer(station);
     
-    // Map station type to gradient colors
     const gradients = {
       jazz: 'from-indigo-500 to-purple-600',
       rock: 'from-red-500 to-orange-600',
@@ -95,7 +71,7 @@ function renderRadioStations(stations) {
     card.innerHTML = `
       <div class="flex items-center mb-4">
         <div class="w-16 h-16 bg-gradient-to-br ${gradientClass} rounded-xl flex items-center justify-center mr-4">
-          <img src="${station.logo_url}" alt="${station.name}" class="w-12 h-12 object-contain">
+          <img src="${station.logo_url}" alt="${station.name}" class="w-full h-full object-contain object-center">
         </div>
         <div class="flex-1">
           <h3 class="text-lg font-semibold mb-1">${station.name}</h3>
@@ -107,7 +83,7 @@ function renderRadioStations(stations) {
           gradientClass.includes('indigo') ? 'indigo' :
           gradientClass.includes('red') ? 'red' :
           gradientClass.includes('cyan') ? 'cyan' :
-          gradientClassაშ0class="emerald" ? 'emerald' :
+          gradientClass.includes('emerald') ? 'emerald' :
           gradientClass.includes('violet') ? 'violet' :
           gradientClass.includes('pink') ? 'pink' : 'gray'
         }-300 text-sm">

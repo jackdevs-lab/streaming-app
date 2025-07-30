@@ -39,9 +39,9 @@
     
     .channel-card img {
       width: 100%;
-      height: 150px; /* Fixed height for consistency */
-      object-fit: cover; /* Ensures the image covers the space */
-      object-position: center; /* Centers the image */
+      height: 150px;
+      object-fit: contain;
+      object-position: center;
     }
     
     .fade-in {
@@ -131,15 +131,28 @@
 
   <script src="/assets/script.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Load TV stations if loadStations function exists
-      if (typeof loadStations === 'function') {
-        loadStations('tv');
+    const API_URL = import.meta.env.VITE_API_URL || 'https://backend-production.up.railway.app';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/stations?type=tv`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const stations = await response.json();
+        if (typeof renderTVStations === 'function') {
+          renderTVStations(stations);
+        }
+      } catch (error) {
+        console.error('Error loading TV stations:', error);
+        alert('Failed to load TV stations. Please try again later.');
       }
-      
+
       // Set up back button
       document.getElementById('back-button').addEventListener('click', () => {
-        window.location.href = 'index.html';
+        document.getElementById('player-container').classList.add('hidden');
+        document.getElementById('tv-grid').classList.remove('hidden');
+        document.getElementById('tv-player').src = ''; // Stop playback
       });
     });
 
