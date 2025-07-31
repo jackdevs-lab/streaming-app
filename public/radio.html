@@ -91,7 +91,9 @@
       object-position: center;
     }
   </style>
-  
+  <script>
+    const API_URL = import.meta.env.VITE_API_URL || 'https://surprising-dedication-production.up.railway.app';
+    </script>
 </head>
 <body class="gradient-bg text-white min-h-screen">
   <div class="container mx-auto px-6 py-8">
@@ -159,46 +161,8 @@
   </div>
 
   <script src="/assets/script.js"></script>
-  <script>
-    const API_URL = import.meta.env.VITE_API_URL || 'https://surprising-dedication-production.up.railway.app';
-
-    document.addEventListener('DOMContentLoaded', async () => {
-      try {
-        const response = await fetch(`${API_URL}/api/stations?type=radio`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const stations = await response.json();
-        if (typeof renderRadioStations === 'function') {
-          renderRadioStations(stations);
-        }
-      } catch (error) {
-        console.error('Error loading radio stations:', error);
-        alert('Failed to load radio stations. Please try again later.');
-      }
-
-      // Set up back button
-      document.getElementById('radio-back-button').addEventListener('click', () => {
-        document.getElementById('radio-player-container').classList.add('hidden');
-        document.getElementById('radio-grid').classList.remove('hidden');
-        document.getElementById('radio-player').pause(); // Stop playback
-      });
-    });
-
-    function openRadioPlayer(station) {
-      document.getElementById('radio-grid').classList.add('hidden');
-      document.getElementById('radio-player-container').classList.remove('hidden');
-      
-      // Set station info
-      document.getElementById('radio-station-name').textContent = station.name;
-      document.getElementById('radio-station-logo').src = station.logo_url;
-      
-      // Set up audio player
-      const audioPlayer = document.getElementById('radio-player');
-      audioPlayer.src = station.stream_url;
-      audioPlayer.autoplay = true;
-      audioPlayer.controls = true;
-    }
-  </script>
+    <script src="/assets/tv.js"></script>
+    <script src="/assets/radio.js"></script>
+  
 </body>
 </html>
