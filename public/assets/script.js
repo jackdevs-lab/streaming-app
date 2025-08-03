@@ -1,12 +1,21 @@
-function renderTVStations(stations) {
+window.renderTVStations = function(stations) {
   const grid = document.getElementById('tv-grid');
+  if (!grid) {
+    console.error('TV grid element not found');
+    return;
+  }
   grid.innerHTML = '';
-  
+
   stations.forEach((station, index) => {
+    if (!station.name || !station.logo_url || !station.stream_url) {
+      console.warn('Skipping invalid station:', station);
+      return;
+    }
+
     const card = document.createElement('div');
     card.className = `channel-card rounded-2xl p-6 cursor-pointer fade-in stagger-delay-${(index % 6) + 1}`;
-    card.onclick = () => openTVPlayer(station);
-    
+    card.onclick = () => window.openTVPlayer(station);
+
     const gradients = {
       news: 'from-blue-600 to-purple-700',
       sports: 'from-emerald-600 to-teal-700',
@@ -15,15 +24,18 @@ function renderTVStations(stations) {
       music: 'from-indigo-600 to-violet-700',
       default: 'from-slate-600 to-gray-700'
     };
-    const gradientClass = gradients[station.description?.toLowerCase().includes('news') ? 'news' :
-      station.description?.toLowerCase().includes('sports') ? 'sports' :
-      station.description?.toLowerCase().includes('movies') ? 'movies' :
-      station.description?.toLowerCase().includes('documentary') ? 'documentary' :
-      station.description?.toLowerCase().includes('music') ? 'music' : 'default'];
+    const description = station.description?.toLowerCase() || '';
+    const gradientClass = gradients[
+      description.includes('news') ? 'news' :
+      description.includes('sports') ? 'sports' :
+      description.includes('movies') ? 'movies' :
+      description.includes('documentary') ? 'documentary' :
+      description.includes('music') ? 'music' : 'default'
+    ];
 
     card.innerHTML = `
       <div class="aspect-video bg-gradient-to-br ${gradientClass} rounded-xl mb-4 flex items-center justify-center">
-        <img src="${station.logo_url}" alt="${station.name}" class="w-full h-full object-contain object-center">
+        <img src="${station.logo_url}" alt="${station.name}" class="w-full h-full object-contain object-center" onerror="this.src='/assets/fallback-image.png';">
       </div>
       <h3 class="text-xl font-semibold mb-2">${station.name}</h3>
       <p class="text-gray-400 text-sm font-light">${station.description || 'Live streaming'}</p>
@@ -38,20 +50,29 @@ function renderTVStations(stations) {
         <span>Live</span>
       </div>
     `;
-    
+
     grid.appendChild(card);
   });
-}
+};
 
-function renderRadioStations(stations) {
+window.renderRadioStations = function(stations) {
   const grid = document.getElementById('radio-grid');
+  if (!grid) {
+    console.error('Radio grid element not found');
+    return;
+  }
   grid.innerHTML = '';
-  
+
   stations.forEach((station, index) => {
+    if (!station.name || !station.logo_url || !station.stream_url) {
+      console.warn('Skipping invalid station:', station);
+      return;
+    }
+
     const card = document.createElement('div');
     card.className = `station-card rounded-2xl p-6 cursor-pointer fade-in stagger-delay-${(index % 6) + 1}`;
-    card.onclick = () => openRadioPlayer(station);
-    
+    card.onclick = () => window.openRadioPlayer(station);
+
     const gradients = {
       jazz: 'from-indigo-500 to-purple-600',
       rock: 'from-red-500 to-orange-600',
@@ -61,17 +82,20 @@ function renderRadioStations(stations) {
       pop: 'from-pink-500 to-rose-600',
       default: 'from-gray-500 to-gray-600'
     };
-    const gradientClass = gradients[station.description?.toLowerCase().includes('jazz') ? 'jazz' :
-      station.description?.toLowerCase().includes('rock') ? 'rock' :
-      station.description?.toLowerCase().includes('electronic') ? 'electronic' :
-      station.description?.toLowerCase().includes('news') ? 'news' :
-      station.description?.toLowerCase().includes('classical') ? 'classical' :
-      station.description?.toLowerCase().includes('pop') ? 'pop' : 'default'];
+    const description = station.description?.toLowerCase() || '';
+    const gradientClass = gradients[
+      description.includes('jazz') ? 'jazz' :
+      description.includes('rock') ? 'rock' :
+      description.includes('electronic') ? 'electronic' :
+      description.includes('news') ? 'news' :
+      description.includes('classical') ? 'classical' :
+      description.includes('pop') ? 'pop' : 'default'
+    ];
 
     card.innerHTML = `
       <div class="flex items-center mb-4">
         <div class="w-16 h-16 bg-gradient-to-br ${gradientClass} rounded-xl flex items-center justify-center mr-4">
-          <img src="${station.logo_url}" alt="${station.name}" class="w-full h-full object-contain object-center">
+          <img src="${station.logo_url}" alt="${station.name}" class="w-full h-full object-contain object-center" onerror="this.src='/assets/fallback-image.png';">
         </div>
         <div class="flex-1">
           <h3 class="text-lg font-semibold mb-1">${station.name}</h3>
@@ -98,7 +122,7 @@ function renderRadioStations(stations) {
         </div>
       </div>
     `;
-    
+
     grid.appendChild(card);
   });
-}
+};

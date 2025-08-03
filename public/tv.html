@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Television Channels | Lumina Stream</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="/output.css" rel="stylesheet">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     
@@ -71,7 +71,6 @@
       backdrop-filter: blur(10px);
     }
   </style>
-  
 </head>
 <body class="gradient-bg text-white min-h-screen">
   <div class="container mx-auto px-6 py-8">
@@ -130,10 +129,19 @@
     </div>
   </div>
 
-  
-  
   <script>
-    const API_URL = import.meta.env.VITE_API_URL || 'https://surprising-dedication-production.up.railway.app';
+    window.openTVPlayer = function(station) {
+      document.getElementById('tv-grid').classList.add('hidden');
+      document.getElementById('player-container').classList.remove('hidden');
+      
+      document.getElementById('station-name').textContent = station.name;
+      
+      const iframe = document.getElementById('tv-player');
+      const streamUrl = `${station.stream_url}?autoplay=1&controls=1&modestbranding=1&rel=0`;
+      iframe.src = streamUrl;
+    };
+
+    const API_URL = 'https://surprising-dedication-production.up.railway.app';
 
     document.addEventListener('DOMContentLoaded', async () => {
       try {
@@ -142,35 +150,22 @@
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const stations = await response.json();
-        if (typeof renderTVStations === 'function') {
-          renderTVStations(stations);
+        if (typeof window.renderTVStations === 'function') {
+          window.renderTVStations(stations);
+        } else {
+          console.error('renderTVStations is not defined');
         }
       } catch (error) {
         console.error('Error loading TV stations:', error);
         alert('Failed to load TV stations. Please try again later.');
       }
 
-      // Set up back button
       document.getElementById('back-button').addEventListener('click', () => {
         document.getElementById('player-container').classList.add('hidden');
         document.getElementById('tv-grid').classList.remove('hidden');
         document.getElementById('tv-player').src = ''; // Stop playback
       });
     });
-
-    function openTVPlayer(station) {
-      document.getElementById('tv-grid').classList.add('hidden');
-      document.getElementById('player-container').classList.remove('hidden');
-      
-      // Set station name
-      document.getElementById('station-name').textContent = station.name;
-      
-      // Set up YouTube iframe with autoplay and minimal controls
-      const iframe = document.getElementById('tv-player');
-      const streamUrl = `${station.stream_url}?autoplay=1&controls=1&modestbranding=1&rel=0`;
-      iframe.src = streamUrl;
-    }
   </script>
-  <script src="/assets/script.js"></script>
-</body>
+<script type="module" src="/assets/script.js"></script></body>
 </html>
