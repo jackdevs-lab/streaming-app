@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
   try {
-    const response = await fetch(`${window.API_URL}/api/stations?type=radio`);
+    const response = await fetch(`${window.VITE_API_URL}/api/stations?type=radio`);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
