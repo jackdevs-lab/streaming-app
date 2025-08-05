@@ -1,6 +1,7 @@
+const API_URL = 'https://surprising-dedication-production.up.railway.app';
 document.addEventListener('DOMContentLoaded', async () => {
   try {
-    const response = await fetch(`${window.VITE_API_URL}/api/stations?type=radio`);
+const response = await fetch(`${API_URL}/api/stations?type=radio`);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
